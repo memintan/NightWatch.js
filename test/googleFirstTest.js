@@ -1,4 +1,5 @@
 module.exports = {
+    "@tags":["googleFirst"],
     "1.Go to Google" : function(client){
         client
             .url("https://www.google.com/")
@@ -6,11 +7,12 @@ module.exports = {
             .saveScreenshot("test/screenshots/" + "google.jpg")
             .end()
     },
-    "2. Search dotdash.com and visit the website then take a screenshot":function (client){
-        client
+    "@tags":["dotdash"],
+    "2. Search dotdash.com and visit the website then take a screenshot":function (browser){
+        browser
             .url("https://www.google.com/")
             .pause(2000)
-            .setValue("input[type=text]", ['dotdash.com', client.Keys.ENTER])
+            .setValue("input[type=text]", ['dotdash.com', browser.Keys.ENTER])
             .pause(2000)
             .assert.containsText("#search","Dotdash")
             .click('a[href="https://www.dotdash.com/"]')

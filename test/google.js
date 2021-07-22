@@ -1,36 +1,32 @@
 module.exports = {
-    'Google Advance search: Elon Musk'(browser){
-        "@tags";["google"];
 
-        const mainQuery = "Elon Musk";
-        const mainQueryInputSelector = "input[name='as_q']";
-        const languageDropDownOpenerSelector = "#lr_button";
-        const languageDropDownValueSelector = "li[id=':18']";
-        const lastUpdateDropDownSelector = "#as_qdr_button";
-        const lastUpdateDropDownValueSelector = "li[id=':81']";
-        const searchButtonSelector = "input[value='Advanced Search']";
-        const resultPageQuerySelector = "input[value='Elon Musk'][name='q'][aria-label='Search']";
-        const resultPageLanguageSelector = "div[class='hdtb-mn-hd Yg3U7e EISXeb'] div[class='KTBKoe']";
-        const resultPageUpdateSelector = "div[class='hdtb-mn-hd EISXeb'] div[class='KTBKoe']";
+    "@tags":["google"],
+    'Google Advance search: Elon Musk': function(browser){
 
+        const mainQuery = 'Elon Musk';
+
+        const page = browser.page.googleAdvancedSearch();
+
+        page
+            .navigate()
+            .setQuery(mainQuery)
+            .selectFilter('@languageDropdown', 'lang_tr')
+            .selectFilter('@lastUpdateDropdown', 'w')
+            .search();
 
         browser
-            .url('https://www.google.com/advanced_search')
-            .setValue(mainQueryInputSelector, mainQuery)
-            .click(languageDropDownOpenerSelector)
-            .click(languageDropDownValueSelector)
-            .click(lastUpdateDropDownSelector)
-            .click(lastUpdateDropDownValueSelector)
-            .click(searchButtonSelector)
+            .assert.urlContains('as_q=Elon+Musk', 'Params: Query is Elon Musk')
+            .assert.urlContains('lr=lang_tr', 'Params: Language is Turkish')
+            .assert.urlContains('as_qdr=w', 'Params: Time period is last week');
 
-            .assert.urlContains("as_q=Elon+Musk","Query is Elon Musk")
-            .assert.urlContains("lr=lang_tr", "Language is Turkish")
-            .assert.urlContains("as_qdr=w", "Time period is last week")
+        const resultsPageQuerySelector = `#searchform input[name="q"][value="${mainQuery}"]`;
+        const resultsPageLanguageSelector = '[aria-label="Search Turkish pages"]';
+        const resultsPageLastUpdateSelector = '[aria-label="Past week"]';
 
-            .assert.visible(resultPageQuerySelector, "UI:Elon Musk")
-            .assert.containsText(resultPageLanguageSelector, "Search Turkish pages", "Language is set to Turkish")
-            .assert.containsText(resultPageUpdateSelector, "Past week", "Last update is set to Past week")
+        browser.assert.visible(resultsPageQuerySelector, 'UI: Elon Musk is set in the query input');
+        browser.assert.containsText(resultsPageLanguageSelector, 'Search Turkish pages', 'UI: Language is set to Turkish');
+        browser.assert.containsText(resultsPageLastUpdateSelector, 'Past week', 'UI: Last update is set to Past week');
 
-            .saveScreenshot("test/screenshots/" + "advancedGoogle.png")
+        browser.saveScreenshot('tests_output/google.png');
     }
-}
+};
